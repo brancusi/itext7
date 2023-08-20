@@ -13,6 +13,12 @@
     <name>Apryse Group NV</name>
     <url>https://itextpdf.com/</url>
   </organization>
+  <distributionManagement>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/brancusi/itext7</url>
+    </repository>
+</distributionManagement>
   <licenses>
     <license>
       <name>GNU Affero General Public License v3</name>
