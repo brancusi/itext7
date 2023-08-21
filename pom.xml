@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.atd.itextpdf</groupId>
+  <groupId>dev.atd.itextpdf</groupId>
   <artifactId>root</artifactId>
   <version>8.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -14,11 +14,19 @@
     <url>https://itextpdf.com/</url>
   </organization>
   <distributionManagement>
-    <repository>
-        <id>github</id>
-        <url>https://maven.pkg.github.com/brancusi/itext7</url>
-    </repository>
-</distributionManagement>
+
+<snapshotRepository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+
+    
+    
+  </distributionManagement>
   <licenses>
     <license>
       <name>GNU Affero General Public License v3</name>
@@ -198,6 +206,18 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>com.github.ekryd.sortpom</groupId>
         <artifactId>sortpom-maven-plugin</artifactId>
