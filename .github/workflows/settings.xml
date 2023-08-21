@@ -20,5 +20,18 @@
             <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
             </properties>
         </profile>
+         <profile>
+            <id>gpg</id>
+            <properties>
+            <gpg.executable>gpg</gpg.executable>
+            <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+            <gpg.useagent>false</gpg.useagent>
+            <gpg.loopback>true</gpg.loopback>
+            </properties>
+        </profile>
     </profiles>
+    
+    <activeProfiles>
+      <activeProfile>gpg</activeProfile>
+    </activeProfiles>
 </settings>
