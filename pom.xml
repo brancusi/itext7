@@ -72,9 +72,11 @@
     <module>bouncy-castle-connector</module>
   </modules>
   <scm>
-    <connection>scm:git:ssh://git@git.itextsupport.com:7999/i7j/itextcore.git</connection>
-    <url>https://git.itextsupport.com/projects/I7J/repos/itextcore</url>
-  </scm>
+      <url>https://github.com/brancusi/itext7.git</url>
+      <connection>scm:git:https://github.com/brancusi/itext7.git</connection>
+      <developerConnection>scm:git:https://github.com/brancusi/itext7.git</developerConnection>
+      <tag>HEAD</tag>
+   </scm>
   <issueManagement>
     <system>jira</system>
     <url>https://jira.itextsupport.com/</url>
@@ -403,27 +405,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>1.6</version>
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-            <configuration>
-              <gpgArguments>
-                <arg>--pinentry-mode</arg>
-                <arg>loopback</arg>
-              </gpgArguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Run unit tests -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -623,196 +604,7 @@
         <maven.test.skip>true</maven.test.skip>
       </properties>
     </profile>
-    <profile>
-      <id>test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.github.ekryd.sortpom</groupId>
-            <artifactId>sortpom-maven-plugin</artifactId>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </plugin>
-          <!-- Run integration tests -->
-          <plugin>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <skipTests>false</skipTests>
-              <includes>
-                <include>**/*.java</include>
-              </includes>
-              <groups>${slowtests}</groups>
-              <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-              <argLine>@{jacoco.agent.argLine}</argLine>
-              <threadCount>1</threadCount>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-source-plugin</artifactId>
-            <configuration>
-              <skipSource>true</skipSource>
-            </configuration>
-          </plugin>
-          <!-- Run unit tests -->
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.maven.surefire</groupId>
-                <artifactId>surefire-junit47</artifactId>
-                <version>${surefire.version}</version>
-                <scope>compile</scope>
-              </dependency>
-            </dependencies>
-            <configuration>
-              <skipTests>false</skipTests>
-              <groups>${unittests}</groups>
-              <argLine>@{jacoco.agent.argLine}</argLine>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>tidy-maven-plugin</artifactId>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </plugin>
-          <!-- Compute test coverage for Sonar BEWARE: Sonar
-                                  doesn't run the verify phase, it has to be forced by setting -Dsonar.phase=verify -->
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>${jacoco.version}</version>
-            <executions>
-              <execution>
-                <id>agent</id>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>report</id>
-                <phase>site</phase>
-                <goals>
-                  <goal>report</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <propertyName>jacoco.agent.argLine</propertyName>
-              <!-- default: argLine -->
-              <includes>
-                <include>com/itextpdf/**</include>
-              </includes>
-              <destFile>${project.build.directory}/jacoco-integration.exec</destFile>
-              <!-- agent -->
-              <dataFile>${project.build.directory}/jacoco-integration.exec</dataFile>
-              <!-- report -->
-              <jmx>true</jmx>
-              <!-- jmx is set to true as a workaround for the code coverage measurement problem with upgrade
-              to junit 4.13.2. See more in DEVSIX-4761. With the future jacoco/junit upgrades the necessity in
-              setting this parameter might fade. It's not used for anything else but making sure code coverage is
-              measured correctly. -->
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- This profile shall always go after test profile because it overrides several plugins -->
-    <profile>
-      <id>bouncy-castle-fips-test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <configuration>
-              <includes>
-                <include>**/*.java</include>
-              </includes>
-              <groups>${bouncycastleintegrationtests}</groups>
-            </configuration>
-            <executions>
-              <execution>
-                <id>general-mode</id>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            <execution>
-              <id>approved-mode</id>
-              <goals>
-                <goal>integration-test</goal>
-                <goal>verify</goal>
-              </goals>
-              <configuration>
-                <systemPropertyVariables>
-                  <org.bouncycastle.fips.approved_only>true</org.bouncycastle.fips.approved_only>
-                </systemPropertyVariables>
-              </configuration>
-            </execution>
-          </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <groups>${bouncycastleunittests}</groups>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>test</goal>
-                </goals>
-                <id>general-mode</id>
-              </execution>
-              <execution>
-                <id>approved-mode</id>
-                <goals>
-                  <goal>test</goal>
-                </goals>
-                <configuration>
-                  <systemPropertyVariables>
-                    <org.bouncycastle.fips.approved_only>true</org.bouncycastle.fips.approved_only>
-                  </systemPropertyVariables>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <!-- This profile is only used by Jenkins. -->
-      <id>mutationtest</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.pitest</groupId>
-            <artifactId>pitest-maven</artifactId>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <sonar.pitest.mode>reuseReport</sonar.pitest.mode>
-      </properties>
-    </profile>
+   
     <profile>
       <id>artifactory</id>
       <build>
@@ -845,5 +637,59 @@
         <maven.test.skip>true</maven.test.skip>
       </properties>
     </profile>
+
+    <profile>
+         <id>ci-cd</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.sonatype.plugins</groupId>
+                  <artifactId>nexus-staging-maven-plugin</artifactId>
+                  <version>1.6.13</version>
+                  <extensions>true</extensions>
+                  <configuration>
+                     <serverId>ossrh</serverId>
+                     <nexusUrl>https://s01.oss.sonatype.org</nexusUrl>
+                     <autoReleaseAfterClose>${env.AUTO_RELEASE_AFTER_CLOSE}</autoReleaseAfterClose>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-release-plugin</artifactId>
+                  <version>2.5.3</version>
+                  <configuration>
+                     <tagNameFormat>@{project.version}</tagNameFormat>
+                  </configuration>
+                  <executions>
+                     <execution>
+                        <id>default</id>
+                        <goals>
+                           <goal>perform</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                           <gpgArguments>
+                              <arg>--pinentry-mode</arg>
+                              <arg>loopback</arg>
+                           </gpgArguments>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
   </profiles>
 </project>
